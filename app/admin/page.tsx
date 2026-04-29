@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Loader2, Users, Image as ImageIcon, Settings, LogOut, Trash2, Edit, Plus, Bell, Mail, Send } from "lucide-react"
+import { Loader2, Users, Image as ImageIcon, Settings, LogOut, Trash2, Edit, Plus, Bell } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -498,14 +498,6 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-                </div>
-
-                {/* リマインドメール */}
-                <div className="border-t border-border/60 pt-6">
-                  <h3 className="font-medium mb-1">リマインドメール一斉送信</h3>
-                  <p className="text-sm text-muted-foreground mb-4">出席予定者全員にメールを一括送信します。</p>
-                  <ReminderEmailForm />
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -513,51 +505,5 @@ export default function AdminPage() {
       </main>
       <SiteFooter />
     </div>
-  )
-}
-
-function ReminderEmailForm() {
-  const [sending, setSending] = useState(false)
-  const [subject, setSubject] = useState("【成人式のご案内】開催のリマインド")
-  const [body, setBody] = useState("このたびは出席のご回答をいただきありがとうございます。\n\nイベントの詳細は以下の通りです。\n\n■ 日時: 2027年1月9日（土）15:00〜\n■ 会場: パレスホテル掛川\n■ 会費: 8,000円（当日受付にて現金）\n\nご不明な点がございましたら、お気軽にご連絡ください。\n当日皆さんにお会いできることを楽しみにしております。")
-
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault()
-    if (!confirm("出席予定者全員にリマインドメールを送信しますか？")) return
-    setSending(true)
-    try {
-      const res = await fetch("/api/send-reminder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, body }),
-      })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json?.error ?? "送信に失敗しました")
-      toast.success(json.message)
-    } catch (err: any) {
-      toast.error(`エラー: ${err.message}`)
-    } finally {
-      setSending(false)
-    }
-  }
-
-  return (
-    <form onSubmit={handleSend} className="space-y-4 max-w-2xl">
-      <div className="space-y-2">
-        <Label>件名</Label>
-        <Input value={subject} onChange={(e) => setSubject(e.target.value)} required />
-      </div>
-      <div className="space-y-2">
-        <Label>本文</Label>
-        <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="h-48" required />
-      </div>
-      <div className="flex items-center gap-2 flex-wrap">
-        <Button type="submit" disabled={sending} className="gap-2">
-          {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          {sending ? "送信中..." : "出席予定者全員に送信"}
-        </Button>
-        <p className="text-xs text-muted-foreground">※ Resend APIキーの設定が必要です</p>
-      </div>
-    </form>
   )
 }
