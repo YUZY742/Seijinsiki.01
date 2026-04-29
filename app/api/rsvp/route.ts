@@ -3,10 +3,31 @@ import { getServerSupabase } from "@/lib/supabase/server"
 
 export const dynamic = "force-dynamic"
 
+export async function GET() {
+  try {
+    const supabase = getServerSupabase()
+    const { data, error } = await supabase
+      .from("rsvps")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.log("[v0] rsvp GET error:", error.message)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ rsvps: data ?? [] })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error"
+    console.log("[v0] rsvp GET exception:", message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, kana, attendance, message } = body ?? {}
+    const { name, kana, attendance, message, classNumber } = body ?? {}
 
     if (!name || typeof name !== "string") {
       return NextResponse.json({ error: "お名前を入力してください" }, { status: 400 })
@@ -22,6 +43,7 @@ export async function POST(request: Request) {
         name: String(name).slice(0, 60),
         kana: kana ? String(kana).slice(0, 80) : null,
         attendance,
+        class_number: typeof classNumber === "number" ? classNumber : null,
         guests: 0,
         message: message ? String(message).slice(0, 600) : null,
       })

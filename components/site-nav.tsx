@@ -14,16 +14,32 @@ const links = [
 
 export function SiteNav() {
   const [open, setOpen] = useState(false)
+  const [clickCount, setClickCount] = useState(0)
+
+  const handleAdminClick = () => {
+    const nextCount = clickCount + 1
+    if (nextCount >= 5) {
+      window.location.href = "/admin"
+    }
+    setClickCount(nextCount)
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 md:h-16 md:px-8">
-        <Link href="#top" className="flex min-w-0 items-baseline gap-2">
-          <span className="truncate font-serif text-base font-medium tracking-wide text-foreground md:text-xl">
-            掛川北中 同窓會
+        <div className="flex min-w-0 items-baseline gap-2">
+          <Link href="#top" className="flex items-baseline gap-2">
+            <span className="truncate font-serif text-base font-medium tracking-wide text-foreground md:text-xl">
+              掛川北中 同窓會
+            </span>
+          </Link>
+          <span 
+            className="hidden text-xs tracking-[0.3em] text-muted-foreground sm:inline cursor-default select-none"
+            onClick={handleAdminClick}
+          >
+            2027
           </span>
-          <span className="hidden text-xs tracking-[0.3em] text-muted-foreground sm:inline">2027</span>
-        </Link>
+        </div>
 
         <nav className="hidden items-center gap-7 md:flex">
           {links.map((l) => (

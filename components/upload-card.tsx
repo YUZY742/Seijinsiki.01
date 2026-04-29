@@ -72,40 +72,34 @@ export function UploadCard({ onUploaded }: { onUploaded?: () => void }) {
     for (const item of queued) {
       try {
         updateItem(item.id, { status: "uploading", progress: 0, error: undefined })
+        toast.info(`${item.file.name}: サーバーに送信中...`)
 
-        const blob = await upload(item.file.name, item.file, {
-          access: "public",
-          handleUploadUrl: "/api/upload",
-          contentType: item.file.type,
-          onUploadProgress: ({ percentage }) => {
-            updateItem(item.id, { progress: percentage })
-          },
-        })
+        // Use our new server-side upload route
+        const formData = new FormData()
+        formData.append("file", item.file)
+        if (uploaderName) formData.append("uploaderName", uploaderName)
+        if (caption) formData.append("caption", caption)
 
-        updateItem(item.id, { status: "saving", progress: 100 })
-
-        const res = await fetch("/api/posts", {
+        const res = await fetch("/api/upload-server", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: blob.url,
-            pathname: blob.pathname,
-            contentType: item.file.type,
-            sizeBytes: item.file.size,
-            uploaderName: uploaderName || null,
-            caption: caption || null,
-          }),
-        })
+          body: formData,
+        }).catch(err => {
+          console.error("[Upload Error]", err);
+          throw new Error(`[送信失敗] ${err.message}`);
+        });
+
         if (!res.ok) {
-          const json = await res.json().catch(() => ({}))
-          throw new Error(json?.error ?? "保存に失敗しました")
+          const json = await res.json().catch(() => ({}));
+          console.error("[Upload Response Error]", json);
+          throw new Error(`[アップロードエラー] ${json?.error ?? res.statusText}`);
         }
 
         updateItem(item.id, { status: "done" })
+        toast.success(`${item.file.name}: 完了！`)
       } catch (err) {
         const msg = err instanceof Error ? err.message : "アップロードに失敗しました"
         updateItem(item.id, { status: "error", error: msg })
-        toast.error(`${item.file.name}: ${msg}`)
+        toast.error(`${item.file.name}: ${msg}`, { duration: 0 });
       }
     }
 

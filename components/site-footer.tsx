@@ -10,6 +10,24 @@ export function SiteFooter() {
           <p className="max-w-md text-sm text-muted-foreground leading-relaxed">
             お問い合わせ・写真の取り下げ依頼は幹事まで。
           </p>
+          <div className="flex gap-4 mt-1">
+            <a 
+              href="https://instagram.com/direct/inbox/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+            >
+              Instagram DMで送る
+            </a>
+            <a 
+              href="https://instagram.com/example" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+            >
+              公式プロフィール
+            </a>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground">© 掛川北中学校 同窓会幹事会</p>
       </div>

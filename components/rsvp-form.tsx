@@ -16,6 +16,7 @@ export function RsvpForm() {
   const [done, setDone] = useState(false)
   const [name, setName] = useState("")
   const [kana, setKana] = useState("")
+  const [classNumber, setClassNumber] = useState<string>("1")
   const [attendance, setAttendance] = useState<Attendance>("attend")
   const [message, setMessage] = useState("")
 
@@ -31,7 +32,7 @@ export function RsvpForm() {
       const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, kana, attendance, message }),
+        body: JSON.stringify({ name, kana, attendance, message, classNumber: parseInt(classNumber) }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json?.error ?? "送信に失敗しました")
@@ -65,6 +66,7 @@ export function RsvpForm() {
               setDone(false)
               setName("")
               setKana("")
+              setClassNumber("1")
               setAttendance("attend")
               setMessage("")
             }}
@@ -109,6 +111,29 @@ export function RsvpForm() {
             className="h-11 text-base"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <Label className="text-sm">
+          3年生の時のクラス <span className="text-accent">*</span>
+        </Label>
+        <RadioGroup
+          value={classNumber}
+          onValueChange={setClassNumber}
+          className="grid grid-cols-5 gap-2"
+        >
+          {["1", "2", "3", "4", "5"].map((num) => (
+            <div key={num}>
+              <RadioGroupItem id={`class-${num}`} value={num} className="peer sr-only" />
+              <Label
+                htmlFor={`class-${num}`}
+                className="flex h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-base font-medium transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/10"
+              >
+                {num}組
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
 
       <div className="flex flex-col gap-3">
