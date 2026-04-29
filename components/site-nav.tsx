@@ -9,7 +9,6 @@ const links = [
   { href: "#about", label: "開催概要" },
   { href: "#rsvp", label: "出欠回答" },
   { href: "#album", label: "アルバム" },
-  { href: "#faq", label: "よくある質問" },
 ]
 
 export function SiteNav() {

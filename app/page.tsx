@@ -32,7 +32,6 @@ export default async function Home() {
       <EventDetails settings={settings} />
       <RsvpSection />
       <AlbumSection showAlbum={settings?.show_album !== false} />
-      <Faq />
       <SiteFooter />
     </main>
   )

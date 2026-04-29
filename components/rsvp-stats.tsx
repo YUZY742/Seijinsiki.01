@@ -21,52 +21,50 @@ export function RsvpStats() {
   const { byClass = {}, male = 0, female = 0, total = 0 } = data
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-3 md:gap-6">
         {/* 全体 */}
-        <div className="col-span-2 flex flex-col gap-1 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium uppercase tracking-wider">出席予定 合計</span>
+        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-3 shadow-sm">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Users className="h-4 w-4" />
           </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold text-foreground">{total}</span>
-            <span className="text-sm text-muted-foreground">名</span>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">合計</span>
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-xl font-bold text-foreground">{total}</span>
+              <span className="text-[10px] text-muted-foreground">名</span>
+            </div>
           </div>
         </div>
 
         {/* 男女 */}
-        <div className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">男性</span>
+        <div className="flex items-center gap-4 px-2">
+          <div className="flex items-center gap-2">
             <User className="h-3.5 w-3.5 text-blue-500" />
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-foreground">{male}</span>
-            <span className="text-xs text-muted-foreground">名</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">女性</span>
-            <User className="h-3.5 w-3.5 text-pink-500" />
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-foreground">{female}</span>
-            <span className="text-xs text-muted-foreground">名</span>
-          </div>
-        </div>
-
-        {/* クラス別（モバイルでは4列表示に収まらないのでグリッド調整） */}
-        {Object.entries(byClass).map(([num, count]: [string, any]) => (
-          <div key={num} className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 shadow-sm md:p-5">
-            <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              {num}組
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-lg font-bold text-foreground">{male}</span>
+              <span className="text-[10px] text-muted-foreground">名</span>
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl font-bold text-foreground md:text-2xl">{count}</span>
-              <span className="text-[10px] text-muted-foreground md:text-xs">名</span>
+          </div>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-2">
+            <User className="h-3.5 w-3.5 text-pink-500" />
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-lg font-bold text-foreground">{female}</span>
+              <span className="text-[10px] text-muted-foreground">名</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* クラス別（よりコンパクトに） */}
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(byClass).map(([num, count]: [string, any]) => (
+          <div key={num} className="flex min-w-[70px] flex-1 items-center justify-between gap-3 rounded-xl border border-border bg-card px-3 py-2 shadow-sm md:flex-none">
+            <span className="text-[11px] font-medium text-muted-foreground">{num}組</span>
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-sm font-bold text-foreground">{count}</span>
+              <span className="text-[9px] text-muted-foreground">名</span>
             </div>
           </div>
         ))}
