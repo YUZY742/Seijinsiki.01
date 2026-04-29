@@ -9,6 +9,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("rsvps")
       .select("*")
+      .order("class_number", { ascending: true, nullsFirst: false })
       .order("kana", { ascending: true, nullsFirst: false })
 
     if (error) {
