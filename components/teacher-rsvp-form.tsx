@@ -106,7 +106,12 @@ export function TeacherRsvpForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="t-message" className="text-sm">ひとこと（教え子たちへ）</Label>
+        <Label htmlFor="t-message" className="text-sm">
+          ひとこと（教え子たちへ）
+          <span className="block mt-1 text-[10px] font-normal text-muted-foreground">
+            ※メッセージは当日お越しになれない先生からの言葉として紹介させていただく場合がございます。
+          </span>
+        </Label>
         <Textarea id="t-message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="楽しみにしています！" rows={4} className="text-base" />
       </div>
 
