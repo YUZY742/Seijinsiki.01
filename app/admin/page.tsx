@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Loader2, Users, Image as ImageIcon, Settings, LogOut, Trash2, Edit, Plus, Bell } from "lucide-react"
+import { Loader2, Users, Image as ImageIcon, Settings, LogOut, Trash2, Edit, Plus, Bell, GraduationCap } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,13 +15,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
 import useSWR from "swr"
-import { addRsvp, updateRsvp, deleteRsvp, deletePost, updateEventSettings, getEventSettings, getAllAnnouncements, createAnnouncement, toggleAnnouncementActive, deleteAnnouncement } from "@/app/actions/admin"
+import { addRsvp, updateRsvp, deleteRsvp, deletePost, updateEventSettings, getEventSettings, getAllAnnouncements, createAnnouncement, toggleAnnouncementActive, deleteAnnouncement, deleteTeacherRsvp } from "@/app/actions/admin"
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function AdminPage() {
   const { data: postsData, isLoading: isLoadingPosts, mutate: mutatePosts } = useSWR("/api/posts", fetcher)
   const { data: rsvpData, isLoading: isLoadingRsvp, mutate: mutateRsvps } = useSWR("/api/rsvp", fetcher)
+  const { data: teacherRsvpData, isLoading: isLoadingTeacherRsvp, mutate: mutateTeacherRsvps } = useSWR("/api/teacher-rsvp", fetcher)
   
   const [settings, setSettings] = useState<any>(null)
   const [announcements, setAnnouncements] = useState<any[]>([])
@@ -30,6 +31,7 @@ export default function AdminPage() {
 
   const posts = postsData?.posts ?? []
   const rsvps = rsvpData?.rsvps ?? []
+  const teacherRsvps = teacherRsvpData?.rsvps ?? []
 
   useEffect(() => {
     async function fetchOtherData() {
@@ -66,6 +68,7 @@ export default function AdminPage() {
       class_number: formData.get("class_number") ? Number(formData.get("class_number")) : undefined,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
+      gender: formData.get("gender") as string,
     }
 
     try {
@@ -78,6 +81,17 @@ export default function AdminPage() {
       }
       setIsRsvpDialogOpen(false)
       mutateRsvps()
+    } catch (err: any) {
+      toast.error(`エラー: ${err.message}`)
+    }
+  }
+
+  const handleDeleteTeacherRsvp = async (id: string) => {
+    if (!confirm("本当に削除しますか？")) return
+    try {
+      await deleteTeacherRsvp(id)
+      toast.success("削除しました")
+      mutateTeacherRsvps()
     } catch (err: any) {
       toast.error(`エラー: ${err.message}`)
     }
@@ -171,12 +185,13 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-5 w-full h-auto gap-2 bg-muted/50 p-1">
-            <TabsTrigger value="overview" className="py-2"><Users className="w-4 h-4 mr-2 hidden md:block" />概要</TabsTrigger>
-            <TabsTrigger value="rsvps" className="py-2"><Users className="w-4 h-4 mr-2 hidden md:block" />名簿管理</TabsTrigger>
-            <TabsTrigger value="photos" className="py-2"><ImageIcon className="w-4 h-4 mr-2 hidden md:block" />写真管理</TabsTrigger>
-            <TabsTrigger value="settings" className="py-2"><Settings className="w-4 h-4 mr-2 hidden md:block" />設定</TabsTrigger>
-            <TabsTrigger value="announcements" className="py-2"><Bell className="w-4 h-4 mr-2 hidden md:block" />お知らせ</TabsTrigger>
+          <TabsList className="grid grid-cols-6 w-full h-auto gap-2 bg-muted/50 p-1">
+            <TabsTrigger value="overview" className="py-2 text-xs md:text-sm"><Users className="w-4 h-4 mr-1 hidden md:block" />概要</TabsTrigger>
+            <TabsTrigger value="rsvps" className="py-2 text-xs md:text-sm"><Users className="w-4 h-4 mr-1 hidden md:block" />名簿</TabsTrigger>
+            <TabsTrigger value="teachers" className="py-2 text-xs md:text-sm"><GraduationCap className="w-4 h-4 mr-1 hidden md:block" />先生</TabsTrigger>
+            <TabsTrigger value="photos" className="py-2 text-xs md:text-sm"><ImageIcon className="w-4 h-4 mr-1 hidden md:block" />写真</TabsTrigger>
+            <TabsTrigger value="settings" className="py-2 text-xs md:text-sm"><Settings className="w-4 h-4 mr-1 hidden md:block" />設定</TabsTrigger>
+            <TabsTrigger value="announcements" className="py-2 text-xs md:text-sm"><Bell className="w-4 h-4 mr-1 hidden md:block" />お知らせ</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
@@ -188,7 +203,11 @@ export default function AdminPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{rsvps.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">出席: {rsvps.filter((r: any) => r.attendance === "attend").length} 名</p>
+                  <p className="text-xs text-muted-foreground mt-1 text-pretty">
+                    出席: {rsvps.filter((r: any) => r.attendance === "attend").length}名 
+                    (男:{rsvps.filter((r: any) => r.attendance === "attend" && r.gender === "male").length} 
+                    女:{rsvps.filter((r: any) => r.attendance === "attend" && r.gender === "female").length})
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-card/50 backdrop-blur border-border/60">
@@ -203,12 +222,12 @@ export default function AdminPage() {
               </Card>
               <Card className="bg-card/50 backdrop-blur border-border/60">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">お知らせ数</CardTitle>
-                  <Bell className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm font-medium text-muted-foreground">先生の出席</CardTitle>
+                  <GraduationCap className="h-4 w-4 text-primary" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{announcements.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">配信中: {announcements.filter((a) => a.is_active).length}</p>
+                  <div className="text-2xl font-bold">{teacherRsvps.filter((r: any) => r.attendance === "attend").length}</div>
+                  <p className="text-xs text-muted-foreground mt-1">回答数: {teacherRsvps.length}</p>
                 </CardContent>
               </Card>
             </div>
@@ -286,6 +305,13 @@ export default function AdminPage() {
                             <option value="undecided">未定</option>
                           </select>
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="gender">性別</Label>
+                          <select id="gender" name="gender" defaultValue={editingRsvp?.gender || "male"} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                            <option value="male">男性</option>
+                            <option value="female">女性</option>
+                          </select>
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">電話番号</Label>
@@ -348,6 +374,71 @@ export default function AdminPage() {
                           </TableCell>
                         </TableRow>
                       ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="teachers">
+            <Card className="bg-card/50 backdrop-blur border-border/60 overflow-hidden">
+              <CardHeader className="border-b border-border/60 bg-muted/30 flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>先生 名簿</CardTitle>
+                  <CardDescription>恩師の方々からの回答一覧です</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                {isLoadingTeacherRsvp ? (
+                  <div className="flex items-center justify-center p-8 text-muted-foreground">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 読み込み中...
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>氏名</TableHead>
+                        <TableHead>担当・教科</TableHead>
+                        <TableHead>出欠</TableHead>
+                        <TableHead>連絡先</TableHead>
+                        <TableHead>メッセージ</TableHead>
+                        <TableHead className="text-right">操作</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {teacherRsvps.map((t: any) => (
+                        <TableRow key={t.id}>
+                          <TableCell className="font-medium">
+                            {t.name}
+                            {t.kana && <div className="text-[10px] text-muted-foreground font-normal">{t.kana}</div>}
+                          </TableCell>
+                          <TableCell>{t.subject || "-"}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${t.attendance === 'attend' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                              {t.attendance === "attend" ? "出席" : "欠席"}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs">
+                            {t.phone && <div>{t.phone}</div>}
+                            {t.email && <div className="text-muted-foreground">{t.email}</div>}
+                            {!t.phone && !t.email && "-"}
+                          </TableCell>
+                          <TableCell className="max-w-[200px] truncate text-xs" title={t.message}>
+                            {t.message || "-"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600" onClick={() => handleDeleteTeacherRsvp(t.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {teacherRsvps.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">回答がまだありません</TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 )}

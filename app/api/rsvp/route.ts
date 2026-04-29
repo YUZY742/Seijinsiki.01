@@ -27,7 +27,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, kana, attendance, message, classNumber, phone, email } = body ?? {}
+    const { name, kana, attendance, message, classNumber, phone, email, gender } = body ?? {}
 
     if (!name || typeof name !== "string") {
       return NextResponse.json({ error: "お名前を入力してください" }, { status: 400 })
@@ -40,6 +40,9 @@ export async function POST(request: Request) {
     }
     if (!["attend", "absent"].includes(attendance)) {
       return NextResponse.json({ error: "出欠を選択してください" }, { status: 400 })
+    }
+    if (attendance === "attend" && !["male", "female"].includes(gender)) {
+      return NextResponse.json({ error: "性別を選択してください" }, { status: 400 })
     }
 
     const supabase = getServerSupabase()
@@ -54,6 +57,7 @@ export async function POST(request: Request) {
         message: message ? String(message).slice(0, 600) : null,
         phone: String(phone).slice(0, 20),
         email: String(email).slice(0, 100),
+        gender: gender || null,
       })
       .select("*")
       .single()

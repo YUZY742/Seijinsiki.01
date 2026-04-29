@@ -21,19 +21,21 @@ export function RsvpForm() {
   const [message, setMessage] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
+  const [gender, setGender] = useState<string>("male")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) { toast.error("お名前を入力してください"); return }
     if (!phone.trim()) { toast.error("電話番号を入力してください"); return }
     if (!email.trim()) { toast.error("メールアドレスを入力してください"); return }
+    if (!gender) { toast.error("性別を選択してください"); return }
 
     setSubmitting(true)
     try {
       const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, kana, attendance, message, classNumber: parseInt(classNumber), phone, email }),
+        body: JSON.stringify({ name, kana, attendance, message, classNumber: parseInt(classNumber), phone, email, gender }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json?.error ?? "送信に失敗しました")
@@ -60,7 +62,7 @@ export function RsvpForm() {
             気が変わったときは、もう一度フォームを送ってもらえれば上書きします。
           </p>
           <Button variant="outline" className="h-11 rounded-full" onClick={() => {
-            setDone(false); setName(""); setKana(""); setClassNumber("1"); setAttendance("attend"); setMessage(""); setPhone(""); setEmail("")
+            setDone(false); setName(""); setKana(""); setClassNumber("1"); setAttendance("attend"); setMessage(""); setPhone(""); setEmail(""); setGender("male")
           }}>
             もう一度回答する
           </Button>
@@ -104,6 +106,24 @@ export function RsvpForm() {
               <RadioGroupItem id={`class-${num}`} value={num} className="peer sr-only" />
               <Label htmlFor={`class-${num}`} className="flex h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-base font-medium transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/10">
                 {num}組
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {/* 性別 */}
+      <div className="flex flex-col gap-3">
+        <Label className="text-sm">性別 <span className="text-accent">*</span></Label>
+        <RadioGroup value={gender} onValueChange={setGender} className="grid grid-cols-2 gap-2">
+          {[
+            { value: "male", label: "男性" },
+            { value: "female", label: "女性" },
+          ].map((opt) => (
+            <div key={opt.value}>
+              <RadioGroupItem id={`gender-${opt.value}`} value={opt.value} className="peer sr-only" />
+              <Label htmlFor={`gender-${opt.value}`} className="flex h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-base font-medium transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/10">
+                {opt.label}
               </Label>
             </div>
           ))}

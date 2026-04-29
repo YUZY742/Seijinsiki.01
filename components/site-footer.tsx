@@ -12,20 +12,12 @@ export function SiteFooter() {
           </p>
           <div className="flex gap-4 mt-1">
             <a 
-              href="https://instagram.com/direct/inbox/" 
+              href="https://www.instagram.com/yasuhiko.sedai.kita?utm_source=qr" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
             >
-              Instagram DMで送る
-            </a>
-            <a 
-              href="https://instagram.com/example" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              公式プロフィール
+              公式Instagram
             </a>
           </div>
         </div>

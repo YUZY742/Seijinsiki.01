@@ -8,14 +8,14 @@ import { del } from "@vercel/blob"
 // RSVP (参加者名簿) 管理
 // ----------------------------------------------------------------------
 
-export async function addRsvp(data: { name: string; kana?: string; attendance: string; guests: number; message?: string; class_number?: number }) {
+export async function addRsvp(data: { name: string; kana?: string; attendance: string; guests: number; message?: string; class_number?: number; phone?: string; email?: string; gender?: string }) {
   const supabase = getServerSupabase()
   const { error } = await supabase.from("rsvps").insert(data)
   if (error) throw new Error(error.message)
   revalidatePath("/admin")
 }
 
-export async function updateRsvp(id: string, data: { name: string; kana?: string; attendance: string; guests: number; message?: string; class_number?: number }) {
+export async function updateRsvp(id: string, data: { name: string; kana?: string; attendance: string; guests: number; message?: string; class_number?: number; phone?: string; email?: string; gender?: string }) {
   const supabase = getServerSupabase()
   const { error } = await supabase.from("rsvps").update(data).eq("id", id)
   if (error) throw new Error(error.message)
@@ -139,5 +139,12 @@ export async function deleteAnnouncement(id: string) {
   const { error } = await supabase.from("announcements").delete().eq("id", id)
   if (error) throw new Error(error.message)
   revalidatePath("/")
+  revalidatePath("/admin")
+}
+
+export async function deleteTeacherRsvp(id: string) {
+  const supabase = getServerSupabase()
+  const { error } = await supabase.from("teacher_rsvps").delete().eq("id", id)
+  if (error) throw new Error(error.message)
   revalidatePath("/admin")
 }
