@@ -8,7 +8,7 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json())
 export function RsvpStats() {
   const { data, isLoading } = useSWR("/api/rsvp-stats", fetcher)
 
-  if (isLoading || !data) {
+  if (isLoading || !data || data.error) {
     return (
       <div className="grid grid-cols-2 gap-4 animate-pulse md:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
@@ -18,7 +18,7 @@ export function RsvpStats() {
     )
   }
 
-  const { byClass, male, female, total } = data
+  const { byClass = {}, male = 0, female = 0, total = 0 } = data
 
   return (
     <div className="flex flex-col gap-6">

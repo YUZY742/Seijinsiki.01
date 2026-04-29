@@ -30,8 +30,8 @@ export default async function Home() {
       <SiteNav />
       <Hero settings={settings} announcements={announcements} />
       <EventDetails settings={settings} />
-      {/* <RsvpSection /> */}
-      {/* <AlbumSection showAlbum={settings?.show_album !== false} /> */}
+      <RsvpSection />
+      <AlbumSection showAlbum={settings?.show_album !== false} />
       <Faq />
       <SiteFooter />
     </main>
