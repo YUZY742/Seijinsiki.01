@@ -2,7 +2,6 @@
 
 import useSWR from "swr"
 import { Gallery } from "./gallery"
-import { UploadCard } from "./upload-card"
 import type { Post } from "@/lib/types"
 import { Loader2 } from "lucide-react"
 
@@ -52,11 +51,6 @@ export function AlbumSection() {
             </svg>
             オープンチャットに参加
           </a>
-        </div>
-
-        {/* アップロードカード */}
-        <div className="mt-6 md:mt-8">
-          <UploadCard onUploaded={() => mutate()} />
         </div>
 
         {/* ギャラリー */}
