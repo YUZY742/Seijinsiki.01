@@ -5,7 +5,18 @@ import { Bell } from "lucide-react"
 
 export function Hero({ settings, announcements }: { settings?: any, announcements?: any[] }) {
   // Use DB settings if available, otherwise fallback to defaults
-  const dateStr = settings?.event_date ? settings.event_date.split("年")[1].split("日")[0].replace("月", ".") : "01.09"
+  let dateStr = "01.09"
+  try {
+    if (settings?.event_date && settings.event_date.includes("年") && settings.event_date.includes("月")) {
+      const parts = settings.event_date.split("年")
+      if (parts.length > 1) {
+        dateStr = parts[1].split("日")[0].replace("月", ".")
+      }
+    }
+  } catch (e) {
+    console.error("Error parsing date:", e)
+  }
+
   const timeStr = settings?.event_time || "15:00 開宴"
   const venueStr = settings?.venue_name || "パレスホテル掛川"
   const feeStr = settings?.fee_amount || "8,000円"
@@ -35,7 +46,9 @@ export function Hero({ settings, announcements }: { settings?: any, announcement
             <div className="space-y-3">
               {announcements.map((a: any) => (
                 <div key={a.id} className="border-t border-border/50 pt-2 first:border-0 first:pt-0">
-                  <span className="text-[10px] text-muted-foreground">{new Date(a.created_at).toLocaleDateString("ja-JP")}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {a.created_at ? new Date(a.created_at).toLocaleDateString("ja-JP") : ""}
+                  </span>
                   <h4 className="font-medium text-sm mt-0.5">{a.title}</h4>
                   <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{a.content}</p>
                 </div>
