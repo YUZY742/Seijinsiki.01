@@ -30,7 +30,7 @@ export function SiteNav() {
         <div className="flex min-w-0 items-baseline gap-2">
           <Link href="#top" className="flex items-baseline gap-2">
             <span className="truncate font-serif text-base font-medium tracking-wide text-foreground md:text-xl">
-              掛川北中 同窓會
+              掛川北中 同窓会
             </span>
           </Link>
           <span 
