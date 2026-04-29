@@ -26,13 +26,14 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-svh bg-background">
+    <main className="min-h-svh bg-background flex flex-col">
       <SiteNav />
-      <Hero settings={settings} announcements={announcements} />
-      <EventDetails settings={settings} />
-      <RsvpSection />
-      <AlbumSection showAlbum={settings?.show_album !== false} />
-      <Faq />
+      <div className="flex-1 flex items-center justify-center p-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Minimal Mode</h1>
+          <p>SiteNav and SiteFooter are enabled.</p>
+        </div>
+      </div>
       <SiteFooter />
     </main>
   )
