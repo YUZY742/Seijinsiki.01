@@ -26,17 +26,7 @@ export function Gallery({ posts }: { posts: Post[] }) {
     }
   }, [active])
 
-  if (!posts.length) {
-    return (
-      <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-background px-6 py-14 text-center md:py-16">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <ImageOff className="h-5 w-5 text-muted-foreground" aria-hidden />
-        </span>
-        <p className="font-serif text-base text-foreground md:text-lg">まだ写真も動画もありません</p>
-        <p className="text-sm text-muted-foreground">最初の一枚を、あなたから。</p>
-      </div>
-    )
-  }
+  if (!posts.length) return null
 
   return (
     <>
