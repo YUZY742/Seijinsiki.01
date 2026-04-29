@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSupabase } from "@/lib/supabase/server"
-import { Resend } from "resend"
 
 export const dynamic = "force-dynamic"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +10,10 @@ export async function POST(request: Request) {
 
     if (!subject || !emailBody) {
       return NextResponse.json({ error: "件名と本文を入力してください" }, { status: 400 })
+    }
+
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json({ error: "RESEND_API_KEY が設定されていません。Vercelの環境変数に追加してください。" }, { status: 500 })
     }
 
     // 出席予定者のメールアドレスを全員取得
@@ -31,9 +32,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "出席予定者のメールアドレスが登録されていません" }, { status: 400 })
     }
 
+    // Resendをルート内部でインスタンス化（ビルド時のエラーを防ぐ）
+    const { Resend } = await import("resend")
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"
 
-    // 1件ずつ送信（BCC一括送信でもOKだが、個人宛に丁寧に送る）
     const results = await Promise.allSettled(
       rsvps.map(async (rsvp) => {
         await resend.emails.send({
@@ -46,8 +49,7 @@ export async function POST(request: Request) {
               <div style="color: #333; line-height: 1.8; white-space: pre-wrap;">${emailBody.replace(/\n/g, "<br>")}</div>
               <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
               <p style="color: #999; font-size: 12px;">
-                このメールは掛川北中学校 成人式実行委員会よりお送りしています。<br>
-                ご不明な点はサイトのフォームからご連絡ください。
+                このメールは掛川北中学校 成人式実行委員会よりお送りしています。
               </p>
             </div>
           `,
