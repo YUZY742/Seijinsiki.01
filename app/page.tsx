@@ -28,10 +28,10 @@ export default async function Home() {
   return (
     <main className="min-h-svh bg-background">
       <SiteNav />
-      {/* <Hero settings={settings} announcements={announcements} /> */}
+      <Hero settings={settings} announcements={announcements} />
       <EventDetails settings={settings} />
       <RsvpSection />
-      {/* <AlbumSection showAlbum={settings?.show_album !== false} /> */}
+      <AlbumSection showAlbum={settings?.show_album !== false} />
       <Faq />
       <SiteFooter />
     </main>

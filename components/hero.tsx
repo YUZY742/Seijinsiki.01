@@ -4,23 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Bell } from "lucide-react"
 
 export function Hero({ settings, announcements }: { settings?: any, announcements?: any[] }) {
-  // Use DB settings if available, otherwise fallback to defaults
-  let dateStr = "01.09"
-  try {
-    if (settings?.event_date && settings.event_date.includes("年") && settings.event_date.includes("月")) {
-      const parts = settings.event_date.split("年")
-      if (parts.length > 1) {
-        dateStr = parts[1].split("日")[0].replace("月", ".")
-      }
-    }
-  } catch (e) {
-    console.error("Error parsing date:", e)
-  }
-
-  const timeStr = settings?.event_time || "15:00 開宴"
-  const venueStr = settings?.venue_name || "パレスホテル掛川"
-  const feeStr = settings?.fee_amount || "8,000円"
-  const venueUrl = settings?.venue_url || "https://breezbay-group.com/kakegawa-ph/"
+  const dateStr = "01.09"
+  const timeStr = "15:00 開宴"
+  const venueStr = "パレスホテル掛川"
+  const feeStr = "8,000円"
+  const venueUrl = "https://breezbay-group.com/kakegawa-ph/"
 
   return (
     <section id="top" className="relative isolate overflow-hidden">
