@@ -31,7 +31,7 @@ export function RsvpSection() {
                 </span>
                 <h2 className="font-serif text-2xl text-foreground md:text-4xl">出欠回答</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  会場手配の都合上、<span className="text-foreground font-medium">2026年11月30日（月）</span>
+                  会場手配の都合上、<span className="text-foreground font-medium">2026年10月30日（金）</span>
                   までにご回答ください。
                 </p>
               </div>
