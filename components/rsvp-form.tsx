@@ -19,24 +19,24 @@ export function RsvpForm() {
   const [classNumber, setClassNumber] = useState<string>("1")
   const [attendance, setAttendance] = useState<Attendance>("attend")
   const [message, setMessage] = useState("")
+  const [phone, setPhone] = useState("")
+  const [email, setEmail] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) {
-      toast.error("お名前を入力してください")
-      return
-    }
+    if (!name.trim()) { toast.error("お名前を入力してください"); return }
+    if (!phone.trim()) { toast.error("電話番号を入力してください"); return }
+    if (!email.trim()) { toast.error("メールアドレスを入力してください"); return }
 
     setSubmitting(true)
     try {
       const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, kana, attendance, message, classNumber: parseInt(classNumber) }),
+        body: JSON.stringify({ name, kana, attendance, message, classNumber: parseInt(classNumber), phone, email }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json?.error ?? "送信に失敗しました")
-
       setDone(true)
       toast.success("回答を受け付けました。ありがとうございます。")
     } catch (err) {
@@ -59,18 +59,9 @@ export function RsvpForm() {
             ご回答を受け付けました。当日お会いできることを楽しみにしています。
             気が変わったときは、もう一度フォームを送ってもらえれば上書きします。
           </p>
-          <Button
-            variant="outline"
-            className="h-11 rounded-full"
-            onClick={() => {
-              setDone(false)
-              setName("")
-              setKana("")
-              setClassNumber("1")
-              setAttendance("attend")
-              setMessage("")
-            }}
-          >
+          <Button variant="outline" className="h-11 rounded-full" onClick={() => {
+            setDone(false); setName(""); setKana(""); setClassNumber("1"); setAttendance("attend"); setMessage(""); setPhone(""); setEmail("")
+          }}>
             もう一度回答する
           </Button>
         </div>
@@ -79,56 +70,39 @@ export function RsvpForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 md:gap-6 md:p-10"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 md:gap-6 md:p-10">
+      {/* 氏名 */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="name" className="text-sm">
-            お名前 <span className="text-accent">*</span>
-          </Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="山田 太郎"
-            autoComplete="name"
-            required
-            className="h-11 text-base"
-          />
+          <Label htmlFor="name" className="text-sm">お名前 <span className="text-accent">*</span></Label>
+          <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="山田 太郎" autoComplete="name" required className="h-11 text-base" />
         </div>
-
         <div className="flex flex-col gap-2">
-          <Label htmlFor="kana" className="text-sm">
-            ふりがな（旧姓があればカッコ書きで）
-          </Label>
-          <Input
-            id="kana"
-            value={kana}
-            onChange={(e) => setKana(e.target.value)}
-            placeholder="やまだ たろう（旧姓: さとう）"
-            className="h-11 text-base"
-          />
+          <Label htmlFor="kana" className="text-sm">ふりがな（旧姓があればカッコ書きで）</Label>
+          <Input id="kana" value={kana} onChange={(e) => setKana(e.target.value)} placeholder="やまだ たろう（旧姓: さとう）" className="h-11 text-base" />
         </div>
       </div>
 
+      {/* 連絡先 */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="phone" className="text-sm">電話番号 <span className="text-accent">*</span></Label>
+          <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="090-1234-5678" autoComplete="tel" required className="h-11 text-base" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email" className="text-sm">メールアドレス <span className="text-accent">*</span></Label>
+          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" autoComplete="email" required className="h-11 text-base" />
+        </div>
+      </div>
+
+      {/* クラス */}
       <div className="flex flex-col gap-3">
-        <Label className="text-sm">
-          3年生の時のクラス <span className="text-accent">*</span>
-        </Label>
-        <RadioGroup
-          value={classNumber}
-          onValueChange={setClassNumber}
-          className="grid grid-cols-5 gap-2"
-        >
+        <Label className="text-sm">3年生の時のクラス <span className="text-accent">*</span></Label>
+        <RadioGroup value={classNumber} onValueChange={setClassNumber} className="grid grid-cols-5 gap-2">
           {["1", "2", "3", "4", "5"].map((num) => (
             <div key={num}>
               <RadioGroupItem id={`class-${num}`} value={num} className="peer sr-only" />
-              <Label
-                htmlFor={`class-${num}`}
-                className="flex h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-base font-medium transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/10"
-              >
+              <Label htmlFor={`class-${num}`} className="flex h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-base font-medium transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/10">
                 {num}組
               </Label>
             </div>
@@ -136,24 +110,15 @@ export function RsvpForm() {
         </RadioGroup>
       </div>
 
+      {/* 出欠 */}
       <div className="flex flex-col gap-3">
-        <Label className="text-sm">
-          ご出欠 <span className="text-accent">*</span>
-        </Label>
-        <RadioGroup
-          value={attendance}
-          onValueChange={(v) => setAttendance(v as Attendance)}
-          className="grid gap-2 sm:grid-cols-2"
-        >
+        <Label className="text-sm">ご出欠 <span className="text-accent">*</span></Label>
+        <RadioGroup value={attendance} onValueChange={(v) => setAttendance(v as Attendance)} className="grid gap-2 sm:grid-cols-2">
           {[
             { value: "attend", label: "参加します" },
             { value: "absent", label: "欠席します" },
           ].map((opt) => (
-            <Label
-              key={opt.value}
-              htmlFor={`att-${opt.value}`}
-              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border border-border bg-background px-4 py-3 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent/10"
-            >
+            <Label key={opt.value} htmlFor={`att-${opt.value}`} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border border-border bg-background px-4 py-3 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent/10">
               <RadioGroupItem id={`att-${opt.value}`} value={opt.value} />
               <span className="text-base font-medium">{opt.label}</span>
             </Label>
@@ -161,18 +126,10 @@ export function RsvpForm() {
         </RadioGroup>
       </div>
 
+      {/* メッセージ */}
       <div className="flex flex-col gap-2">
-        <Label htmlFor="message" className="text-sm">
-          ひとこと（任意）
-        </Label>
-        <Textarea
-          id="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="懐かしい！絶対行きます。アレルギーあります、など"
-          rows={4}
-          className="text-base"
-        />
+        <Label htmlFor="message" className="text-sm">ひとこと（任意）</Label>
+        <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="懐かしい！絶対行きます。アレルギーあります、など" rows={4} className="text-base" />
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border/60 pt-5 md:flex-row md:items-center md:justify-between md:pt-6">

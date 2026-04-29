@@ -76,6 +76,24 @@ export function EventDetails({ settings }: { settings?: any }) {
             )
           })}
         </ul>
+
+        {/* Googleカレンダー登録ボタン */}
+        <div className="mt-8 flex justify-center md:justify-start">
+          <a
+            href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent((settings?.event_date || "2027年1月9日（土）") + " " + (settings?.venue_name || "パレスホテル掛川") + " 成人式同窓会")}&dates=20270109T060000Z/20270109T120000Z&details=${encodeURIComponent("掛川北中学校 成人式同窓会\n会費: " + (settings?.fee_amount || "8,000円") + "\n" + (settings?.fee_note || "当日受付にて現金"))}&location=${encodeURIComponent(settings?.venue_address || "静岡県掛川市亀の甲2-8-15")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/60 hover:bg-accent/5"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-500">
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            Googleカレンダーに追加する
+          </a>
+        </div>
       </div>
     </section>
   )

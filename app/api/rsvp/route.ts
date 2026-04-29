@@ -9,7 +9,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("rsvps")
       .select("*")
-      .order("created_at", { ascending: false })
+      .order("kana", { ascending: true, nullsFirst: false })
 
     if (error) {
       console.log("[v0] rsvp GET error:", error.message)
@@ -27,10 +27,16 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, kana, attendance, message, classNumber } = body ?? {}
+    const { name, kana, attendance, message, classNumber, phone, email } = body ?? {}
 
     if (!name || typeof name !== "string") {
       return NextResponse.json({ error: "お名前を入力してください" }, { status: 400 })
+    }
+    if (!phone || typeof phone !== "string") {
+      return NextResponse.json({ error: "電話番号を入力してください" }, { status: 400 })
+    }
+    if (!email || typeof email !== "string") {
+      return NextResponse.json({ error: "メールアドレスを入力してください" }, { status: 400 })
     }
     if (!["attend", "absent"].includes(attendance)) {
       return NextResponse.json({ error: "出欠を選択してください" }, { status: 400 })
@@ -46,6 +52,8 @@ export async function POST(request: Request) {
         class_number: typeof classNumber === "number" ? classNumber : null,
         guests: 0,
         message: message ? String(message).slice(0, 600) : null,
+        phone: String(phone).slice(0, 20),
+        email: String(email).slice(0, 100),
       })
       .select("*")
       .single()
