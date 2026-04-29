@@ -81,9 +81,21 @@ export async function getEventSettings(): Promise<EventSettings | null> {
 
 export async function updateEventSettings(data: EventSettings) {
   const supabase = getServerSupabase()
-  // upsertでID=1を更新する（または作成）
+  
+  // 1. 最初は全データで更新を試みる
   const { error } = await supabase.from("event_settings").upsert({ id: 1, ...data })
-  if (error) throw new Error(error.message)
+  
+  if (error) {
+    // もし "column does not exist" エラー（show_albumがない）の場合は、それを除いて再試行
+    if (error.message.includes("show_album") || error.code === "42703") {
+      const { show_album, ...legacyData } = data as any
+      const { error: error2 } = await supabase.from("event_settings").upsert({ id: 1, ...legacyData })
+      if (error2) throw new Error(error2.message)
+    } else {
+      throw new Error(error.message)
+    }
+  }
+  
   revalidatePath("/")
   revalidatePath("/admin")
 }
