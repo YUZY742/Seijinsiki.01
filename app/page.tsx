@@ -10,30 +10,12 @@ import { getEventSettings, getAnnouncements } from "@/app/actions/admin"
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  let settings = null
-  let announcements = []
-
-  try {
-    const results = await Promise.allSettled([
-      getEventSettings(),
-      getAnnouncements()
-    ])
-    
-    if (results[0].status === 'fulfilled') settings = results[0].value
-    if (results[1].status === 'fulfilled') announcements = results[1].value
-  } catch (error) {
-    console.error("Failed to fetch initial data:", error)
-  }
-
   return (
-    <main className="min-h-svh bg-background">
-      <SiteNav />
-      <Hero settings={settings} announcements={announcements} />
-      <EventDetails settings={settings} />
-      <RsvpSection />
-      <AlbumSection showAlbum={settings?.show_album !== false} />
-      <Faq />
-      <SiteFooter />
+    <main className="min-h-svh bg-background flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">Debug Mode</h1>
+        <p>If you see this, the layout and basic page are working.</p>
+      </div>
     </main>
   )
 }
