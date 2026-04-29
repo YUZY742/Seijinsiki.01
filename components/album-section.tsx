@@ -37,7 +37,7 @@ export function AlbumSection() {
         {/* LINEオープンチャットへの誘導バナー */}
         <div className="mt-6 flex flex-col gap-3 rounded-xl border border-[#06C755]/30 bg-[#06C755]/5 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-foreground">📸 大きな動画・追加の写真はオープンチャットへ！</p>
+            <p className="text-sm font-medium text-foreground">📸 写真や動画の共有はオープンチャットへ！</p>
             <p className="text-xs text-muted-foreground mt-0.5">「掛川北27年/１月同窓会」のLINEグループでも写真・動画を共有できます</p>
           </div>
           <a
