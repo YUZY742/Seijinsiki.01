@@ -21,7 +21,7 @@ export default async function Home() {
       <Hero settings={settings} announcements={announcements} />
       <EventDetails settings={settings} />
       <RsvpSection />
-      <AlbumSection />
+      <AlbumSection showAlbum={settings?.show_album !== false} />
       <Faq />
       <SiteFooter />
     </main>

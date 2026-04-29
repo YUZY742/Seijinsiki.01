@@ -123,6 +123,8 @@ export default function AdminPage() {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const data = Object.fromEntries(formData.entries()) as any
+    // SwitchはformDataに含まれないので手動で取得
+    data.show_album = settings?.show_album !== false
     try {
       await updateEventSettings(data)
       toast.success("設定を保存しました")
@@ -524,6 +526,19 @@ export default function AdminPage() {
                       <div className="space-y-2">
                         <Label htmlFor="fee_note">会費の注記</Label>
                         <Input id="fee_note" name="fee_note" defaultValue={settings?.fee_note || "当日受付にて現金でお支払い"} required />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border p-4 rounded-lg bg-muted/20">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label className="text-base font-medium">アルバムセクションの表示</Label>
+                          <p className="text-sm text-muted-foreground">トップページにアルバム（LINE共有案内）を表示するかどうか</p>
+                        </div>
+                        <Switch 
+                          checked={settings?.show_album !== false} 
+                          onCheckedChange={(val) => setSettings({ ...settings, show_album: val })}
+                        />
                       </div>
                     </div>
 

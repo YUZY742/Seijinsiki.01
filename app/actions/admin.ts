@@ -66,6 +66,7 @@ export type EventSettings = {
   fee_note: string;
   target_audience: string;
   target_note: string;
+  show_album: boolean;
 }
 
 export async function getEventSettings(): Promise<EventSettings | null> {

@@ -8,10 +8,12 @@ import { Loader2 } from "lucide-react"
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 const LINE_OPEN_CHAT_URL = "https://line.me/ti/g2/i-2PJZdg1DdGYC_f5t-uIVHPXfh0c7VBvQY70A?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
 
-export function AlbumSection() {
+export function AlbumSection({ showAlbum = true }: { showAlbum?: boolean }) {
   const { data, isLoading, mutate } = useSWR<{ posts: Post[] }>("/api/posts", fetcher, {
     revalidateOnFocus: false,
   })
+
+  if (!showAlbum) return null
 
   const posts = data?.posts ?? []
   const photoCount = posts.filter((p) => p.type === "photo").length
