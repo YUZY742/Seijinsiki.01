@@ -49,9 +49,7 @@ export function Hero({ settings, announcements }: { settings?: any, announcement
         </span>
 
         <h1 className="max-w-3xl text-pretty font-serif text-[2.25rem] leading-[1.15] text-foreground md:text-6xl">
-          あの日の教室から、
-          <br />
-          <span className="text-primary">もう一度。</span>
+          仲間との再会
         </h1>
 
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">

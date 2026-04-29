@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "掛川北中学校 卒業生・令和7年度 二十歳の集い参加者の同窓会ご案内。2027年1月9日（土）パレスホテル掛川にて開催。出欠回答と写真・動画の共有はこちらから。",
   generator: "v0.app",
   openGraph: {
-    title: "掛川北中学校 同窓会 | あの日の教室から、もう一度。",
+    title: "掛川北中学校 同窓会 | 仲間との再会",
     description: "2027年1月9日（土）パレスホテル掛川。掛川北中学校 卒業生の同窓会ご案内。",
     type: "website",
     locale: "ja_JP",
