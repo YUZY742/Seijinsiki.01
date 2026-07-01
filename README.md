@@ -119,11 +119,3 @@ Instagram DMへの導線を用意しています。
 
 ## URL定数
 
-本番公開時は、以下のURLを差し替えてください。
-
-```js
-const RSVP_FORM_URL = "https://example.com/rsvp";
-const PHOTO_ALBUM_URL = "https://example.com/photos";
-const INSTAGRAM_DM_URL = "https://instagram.com/direct/inbox/";
-const INSTAGRAM_PROFILE_URL = "https://instagram.com/example";
-``
